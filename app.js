@@ -14,9 +14,9 @@ connectDb();
 app.use(userRoutes);
 
  //setup server to listen on port 5000
-
-app.listen(5000,()=>{
-    console.log("server is live on port 5000");
+const port = 5000
+app.listen(port,()=>{
+    console.log("server is live on port "+port);
 })
 
 
