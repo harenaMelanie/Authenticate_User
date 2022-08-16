@@ -16,17 +16,11 @@ router.post("/login", signin, function (req, res) {
 });
 
 router.get('/hiddencontent', verifyToken , function(req, res){
-    if(!user){
-        res.status(403)
-        .send({
-            message: "Invalid JWT token"
-        });
-    } else{
-        res.status(403)
-        .send({
-            message:" Unauthorized acces"
-        });
-    }
+    res.status(200)
+    .send({
+        message: "user is verified",
+        success:true
+    });
 });
 
 router.get("/",(req,res)=>{

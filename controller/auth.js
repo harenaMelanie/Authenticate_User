@@ -82,25 +82,35 @@ exports.signin = (req, res) => {
 
 // Verify Token
 exports.verifyToken = (req, res, next) => {
-    console.dir(req.headers)
-    if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-        jwt.verify(req.headers.authorization.split(' ')[1], process.env.API_SECRET, function (err, decode) {
-            if (err) req.user = undefined;
+    console.dir(req.headers.token)
+    if (req.headers.token) {
+        jwt.verify(req.headers.token, process.env.API_SECRET, function (err, decode) {
+            if (err){
+                if(err instanceof jwt.JsonWebTokenError ){
+                    res.status(403)
+                    .send({
+                        message: "Invalid JWT token",
+                        success:false
+                    });
+                } else{
+                    res.status(403)
+                    .send({
+                        message:" expired",
+                        success:false
+                    });
+                }
+            }
             User.findOne({
                 _id: decode.id
+            }).then(user => {
+                // req.user = user;
+                console.log('user is logged in:' + user)
+                if(user) next();
+            }).catch(err => {
+                res.status(500).send({
+                    message: err
+                });
             })
-                .exec((err, user) => {
-                    if (err) {
-                        res.status(500)
-                            .send({
-                                message: err
-                            });
-                    } else {
-                        req.user = user;
-                        console.log('>> user is logged in user :'+user)
-                        next();
-                    }
-                })
         });
     } else {
         console.log('>> token match any id')
