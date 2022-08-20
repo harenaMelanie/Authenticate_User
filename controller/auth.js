@@ -28,6 +28,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+    console.log(req.body)
     User.findOne({
         email: req.body.email
     })
@@ -62,7 +63,7 @@ exports.signin = (req, res) => {
             //signing token with user id
             var token = jwt.sign({
                 id: user._id
-            }, process.env.API_SECRET, {
+            }, process.env.API_SECRET,{
                 expiresIn: 864000
             });
 
@@ -82,9 +83,9 @@ exports.signin = (req, res) => {
 
 // Verify Token
 exports.verifyToken = (req, res, next) => {
-    console.dir(req.headers.token)
-    if (req.headers.token) {
-        jwt.verify(req.headers.token, process.env.API_SECRET, function (err, decode) {
+    console.dir(req.body.token)
+    if (req.body.token) {
+        jwt.verify(req.body.token, process.env.API_SECRET, function (err, decode) {
             if (err){
                 if(err instanceof jwt.JsonWebTokenError ){
                     res.status(403)
@@ -95,7 +96,7 @@ exports.verifyToken = (req, res, next) => {
                 } else{
                     res.status(403)
                     .send({
-                        message:" expired",
+                        message:"expired",
                         success:false
                     });
                 }

@@ -1,21 +1,21 @@
 var express = require("express"),
 
-router = express.Router(),
-  {
+router = express.Router();
+const {
     signup,
     signin,
     verifyToken
   } = require("../controller/auth");
 
 router.post("/signup", signup, function (req, res) {
-
+  signup(req,res);
 });
 
-router.post("/login", signin, function (req, res) {
-    console.log("welcome you're logged")
+router.post("/login", function (req, res) {
+  signin(req,res);
 });
 
-router.get('/hiddencontent', verifyToken , function(req, res){
+router.post('/hiddencontent', verifyToken , function(req, res){
     res.status(200)
     .send({
         message: "user is verified",
